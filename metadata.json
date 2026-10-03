@@ -1,0 +1,6 @@
+{
+  "name": "GitOps Autopilot — Déploiement & Auto-Healing Ubuntu / GitHub",
+  "description": "Workflow autonome de modification de code, push Git, déploiement distant Ubuntu, vérification visuelle E2E avec auto-correction et rollback automatique.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
