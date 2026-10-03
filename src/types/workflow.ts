@@ -73,6 +73,8 @@ export interface WorkflowRun {
   previousCommitHash: string;
   diffs: DiffFile[];
   logs: TerminalLogEntry[];
+  aiProvider?: AIProviderId;
+  aiModel?: string;
   webInspection?: WebInspectionResult;
   selfHealingAttempt?: {
     cause: string;
@@ -109,6 +111,31 @@ export interface GitHubConfig {
   tokenConfigured: boolean;
   webhookConfigured: boolean;
 }
+
+export type AIProviderId = 'google' | 'openai' | 'anthropic' | 'mistral';
+
+export interface AIModelOption {
+  id: string;
+  name: string;
+  freeTier: boolean;
+  description: string;
+}
+
+export interface AIProviderConfig {
+  id: AIProviderId;
+  name: string;
+  badge: string;
+  iconEmoji: string;
+  defaultModel: string;
+  availableModels: AIModelOption[];
+  endpointUrl: string;
+  apiKey: string;
+  isConfigured: boolean;
+  freeTierNote: string;
+  docsUrl: string;
+}
+
+export type AIProvidersMap = Record<AIProviderId, AIProviderConfig>;
 
 export interface PresetScenario {
   id: string;

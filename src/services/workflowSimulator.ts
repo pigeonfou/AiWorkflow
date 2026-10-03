@@ -1,4 +1,4 @@
-import { DiffFile, PipelineStepId, ServerConfig, TerminalLogEntry, WebInspectionResult, WorkflowRun } from '../types/workflow';
+import { AIProviderId, AIProvidersMap, DiffFile, PipelineStepId, ServerConfig, TerminalLogEntry, WebInspectionResult, WorkflowRun } from '../types/workflow';
 
 type LogCallback = (log: TerminalLogEntry) => void;
 type StepCallback = (step: PipelineStepId, iteration: number) => void;
@@ -31,6 +31,9 @@ export async function runWorkflowExecution({
   failReason,
   fixSummary,
   serverConfig,
+  aiProvider = 'google',
+  aiModel = 'gemini-2.5-flash',
+  aiProvidersConfig,
   onLog,
   onStepChange,
   onUpdate,
@@ -41,6 +44,9 @@ export async function runWorkflowExecution({
   failReason?: string;
   fixSummary?: string;
   serverConfig: ServerConfig;
+  aiProvider?: AIProviderId;
+  aiModel?: string;
+  aiProvidersConfig?: AIProvidersMap;
   onLog: LogCallback;
   onStepChange: StepCallback;
   onUpdate: UpdateCallback;
@@ -49,23 +55,29 @@ export async function runWorkflowExecution({
   const commitHash = Math.random().toString(16).substring(2, 9);
   let iteration = 1;
 
+  const currentProvider = aiProvidersConfig?.[aiProvider];
+  const providerName = currentProvider?.name || aiProvider.toUpperCase();
+  const endpoint = currentProvider?.endpointUrl || 'API Cloud';
+
   // --- STEP 1: ANALYZING ---
   onStepChange('analyzing', iteration);
   onLog(makeLog('agent', 'info', `🚀 Démarrage du workflow pour la demande : "${taskPrompt}"`));
+  await sleep(400);
+  onLog(makeLog('agent', 'command', `🤖 Modèle IA sélectionné : [${providerName}] ${aiModel} (Endpoint: ${endpoint})`));
   await sleep(600);
-  onLog(makeLog('agent', 'info', `🔍 Analyse du dépôt distant et des fichiers source impactés...`));
-  await sleep(700);
-  onLog(makeLog('agent', 'info', `📋 Stratégie de modification établie : 2 fichiers cibles identifiés`));
+  onLog(makeLog('agent', 'info', `🔍 Analyse du dépôt distant et des dépendances de projet...`));
+  await sleep(600);
+  onLog(makeLog('agent', 'info', `📋 Stratégie de modification établie avec ${providerName} : 2 fichiers cibles identifiés`));
   await sleep(500);
 
   // --- STEP 2: CODING & DIFF GENERATION ---
   onStepChange('coding', iteration);
-  onLog(makeLog('agent', 'command', `⚡ Génération du code source et construction du patch AST...`));
+  onLog(makeLog('agent', 'command', `⚡ Requête d'inférence envoyée à ${providerName} (${endpoint}) pour génération du patch AST...`));
   await sleep(900);
 
   const diffs: DiffFile[] = generateRealisticDiffs(taskPrompt);
-  onUpdate({ diffs });
-  onLog(makeLog('agent', 'success', `✅ Modifications créées : +${diffs.reduce((a, b) => a + b.additions, 0)} lignes, -${diffs.reduce((a, b) => a + b.deletions, 0)} lignes across ${diffs.length} fichier(s)`));
+  onUpdate({ diffs, aiProvider, aiModel });
+  onLog(makeLog('agent', 'success', `✅ Modifications créées via ${aiModel} : +${diffs.reduce((a, b) => a + b.additions, 0)} lignes, -${diffs.reduce((a, b) => a + b.deletions, 0)} lignes across ${diffs.length} fichier(s)`));
   await sleep(600);
 
   // --- STEP 3: GIT PUSH TO BRANCH ---
@@ -178,6 +190,8 @@ export async function runWorkflowExecution({
     commitHash,
     previousCommitHash: previousCommit,
     diffs,
+    aiProvider,
+    aiModel,
   };
 }
 

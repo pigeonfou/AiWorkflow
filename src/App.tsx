@@ -25,12 +25,15 @@ import { HistoryDrawer } from './components/HistoryDrawer';
 import { ConfigModal } from './components/ConfigModal';
 import { ScriptExportModal } from './components/ScriptExportModal';
 import { 
+  defaultAIProviders,
   defaultGitHubConfig, 
   defaultServerConfig, 
   initialHistory, 
   presetScenarios 
 } from './data/mockData';
 import { 
+  AIProviderId,
+  AIProvidersMap,
   GitHubConfig, 
   PipelineStepId, 
   PresetScenario, 
@@ -47,6 +50,10 @@ import {
 export default function App() {
   const [serverConfig, setServerConfig] = useState<ServerConfig>(defaultServerConfig);
   const [gitHubConfig, setGitHubConfig] = useState<GitHubConfig>(defaultGitHubConfig);
+  const [aiProviders, setAiProviders] = useState<AIProvidersMap>(defaultAIProviders);
+  const [selectedProviderId, setSelectedProviderId] = useState<AIProviderId>('google');
+  const [selectedModel, setSelectedModel] = useState<string>('gemini-2.5-flash');
+
   const [history, setHistory] = useState<WorkflowRun[]>(initialHistory);
 
   // Initialize with initial history run so the user sees a rich interface immediately
@@ -59,13 +66,19 @@ export default function App() {
   // Modals
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [isConfigOpen, setIsConfigOpen] = useState(false);
+  const [configInitialTab, setConfigInitialTab] = useState<'ai' | 'server' | 'git'>('ai');
   const [isScriptsOpen, setIsScriptsOpen] = useState(false);
 
   const isRunning = currentRun?.status === 'running';
   const waitingReview = currentRun?.status === 'waiting_review';
 
   // Start new autonomous loop
-  const handleStartWorkflow = async (prompt: string, scenario?: PresetScenario) => {
+  const handleStartWorkflow = async (
+    prompt: string, 
+    scenario?: PresetScenario,
+    providerId: AIProviderId = selectedProviderId,
+    modelName: string = selectedModel
+  ) => {
     const previousCommit = currentRun?.commitHash || 'e3b8d21';
     const newRunId = `run-${Date.now().toString().slice(-4)}`;
 
@@ -82,6 +95,8 @@ export default function App() {
       previousCommitHash: previousCommit,
       diffs: [],
       logs: [],
+      aiProvider: providerId,
+      aiModel: modelName,
     };
 
     setCurrentRun(newRun);
@@ -94,6 +109,9 @@ export default function App() {
         failReason: scenario?.failReason,
         fixSummary: scenario?.fixSummary,
         serverConfig,
+        aiProvider: providerId,
+        aiModel: modelName,
+        aiProvidersConfig: aiProviders,
         onLog: (log: TerminalLogEntry) => {
           setCurrentRun((prev) => (prev ? { ...prev, logs: [...prev.logs, log] } : null));
         },
@@ -187,7 +205,10 @@ export default function App() {
         serverConfig={serverConfig}
         gitHubConfig={gitHubConfig}
         onOpenHistory={() => setIsHistoryOpen(true)}
-        onOpenConfig={() => setIsConfigOpen(true)}
+        onOpenConfig={() => {
+          setConfigInitialTab('server');
+          setIsConfigOpen(true);
+        }}
         onOpenScripts={() => setIsScriptsOpen(true)}
       />
 
@@ -204,11 +225,20 @@ export default function App() {
           isProcessingDecision={isProcessingDecision}
         />
 
-        {/* Task Input Prompt & Presets */}
+        {/* Task Input Prompt & AI Model Selection & Presets */}
         <TaskPromptInput
           isRunning={isRunning}
           waitingReview={waitingReview}
           onStartWorkflow={handleStartWorkflow}
+          aiProviders={aiProviders}
+          selectedProviderId={selectedProviderId}
+          selectedModel={selectedModel}
+          onSelectProvider={setSelectedProviderId}
+          onSelectModel={setSelectedModel}
+          onOpenConfig={() => {
+            setConfigInitialTab('ai');
+            setIsConfigOpen(true);
+          }}
         />
 
         {/* Workspace Navigation Tabs */}
@@ -286,6 +316,8 @@ export default function App() {
                   diffs={currentRun?.diffs || []}
                   branchName={currentRun?.branchName}
                   commitHash={currentRun?.commitHash}
+                  aiProvider={currentRun?.aiProvider}
+                  aiModel={currentRun?.aiModel}
                 />
                 <TerminalLogs
                   logs={currentRun?.logs || []}
@@ -301,6 +333,8 @@ export default function App() {
                 diffs={currentRun?.diffs || []}
                 branchName={currentRun?.branchName}
                 commitHash={currentRun?.commitHash}
+                aiProvider={currentRun?.aiProvider}
+                aiModel={currentRun?.aiModel}
               />
               <TerminalLogs
                 logs={currentRun?.logs || []}
@@ -319,6 +353,8 @@ export default function App() {
                 diffs={currentRun?.diffs || []}
                 branchName={currentRun?.branchName}
                 commitHash={currentRun?.commitHash}
+                aiProvider={currentRun?.aiProvider}
+                aiModel={currentRun?.aiModel}
               />
             </div>
           )}
@@ -353,9 +389,12 @@ export default function App() {
         onClose={() => setIsConfigOpen(false)}
         serverConfig={serverConfig}
         gitHubConfig={gitHubConfig}
-        onSave={(newServer, newGit) => {
+        aiProviders={aiProviders}
+        initialTab={configInitialTab}
+        onSave={(newServer, newGit, newProviders) => {
           setServerConfig(newServer);
           setGitHubConfig(newGit);
+          setAiProviders(newProviders);
         }}
       />
 

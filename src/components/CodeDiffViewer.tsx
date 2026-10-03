@@ -6,12 +6,16 @@ interface CodeDiffViewerProps {
   diffs: DiffFile[];
   branchName?: string;
   commitHash?: string;
+  aiProvider?: string;
+  aiModel?: string;
 }
 
 export const CodeDiffViewer: React.FC<CodeDiffViewerProps> = ({
   diffs,
   branchName,
   commitHash,
+  aiProvider,
+  aiModel,
 }) => {
   const [selectedFileIdx, setSelectedFileIdx] = useState(0);
   const [copied, setCopied] = useState(false);
@@ -41,11 +45,16 @@ export const CodeDiffViewer: React.FC<CodeDiffViewerProps> = ({
     <div className="bg-slate-950 border border-slate-800 rounded-xl overflow-hidden flex flex-col font-mono text-xs">
       {/* Header bar */}
       <div className="bg-slate-900/90 border-b border-slate-800 px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <FileCode className="w-4 h-4 text-emerald-400" />
           <span className="font-sans font-semibold text-slate-200 text-xs">
             Diff Git des Modifications
           </span>
+          {aiModel && (
+            <span className="text-[11px] text-sky-300 bg-sky-950/70 border border-sky-500/30 px-2 py-0.5 rounded font-mono">
+              IA: {aiModel}
+            </span>
+          )}
           {commitHash && (
             <span className="text-[11px] text-slate-400 bg-slate-800 px-2 py-0.5 rounded font-mono">
               commit {commitHash}

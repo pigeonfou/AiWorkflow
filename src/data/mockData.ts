@@ -1,4 +1,75 @@
-import { GitHubConfig, PresetScenario, ServerConfig, WorkflowRun } from '../types/workflow';
+import { AIProvidersMap, GitHubConfig, PresetScenario, ServerConfig, WorkflowRun } from '../types/workflow';
+
+export const defaultAIProviders: AIProvidersMap = {
+  google: {
+    id: 'google',
+    name: 'Google Gemini',
+    badge: 'Gemini 2.5',
+    iconEmoji: '✨',
+    defaultModel: 'gemini-2.5-flash',
+    endpointUrl: 'https://generativelanguage.googleapis.com/v1beta',
+    apiKey: 'AIzaSyDemo-GeminiKeyFreeTier-Validated',
+    isConfigured: true,
+    freeTierNote: 'Plan gratuit Google AI Studio (15 RPM / 1M TPM sans carte requise)',
+    docsUrl: 'https://aistudio.google.com/app/apikey',
+    availableModels: [
+      { id: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash', freeTier: true, description: 'Ultra-rapide, équilibre idéal pour le code et déploiement continu' },
+      { id: 'gemini-2.5-flash-lite', name: 'Gemini 2.5 Flash-Lite', freeTier: true, description: 'Latence minimale (< 400ms) pour itérations rapides' },
+      { id: 'gemini-2.5-pro', name: 'Gemini 2.5 Pro', freeTier: true, description: 'Raisonnement avancé pour refactoring complexe et diagnostic de crash' },
+    ],
+  },
+  openai: {
+    id: 'openai',
+    name: 'OpenAI',
+    badge: 'GPT-4o mini',
+    iconEmoji: '🟢',
+    defaultModel: 'gpt-4o-mini',
+    endpointUrl: 'https://api.openai.com/v1',
+    apiKey: 'sk-proj-demo-OpenAIFreeTierKey',
+    isConfigured: true,
+    freeTierNote: 'Crédits découverte et tarification free-tier pour modèles légers',
+    docsUrl: 'https://platform.openai.com/api-keys',
+    availableModels: [
+      { id: 'gpt-4o-mini', name: 'GPT-4o mini', freeTier: true, description: 'Génération de code agile et économique' },
+      { id: 'gpt-3.5-turbo', name: 'GPT-3.5 Turbo', freeTier: true, description: 'Modèle léger compatible avec les intégrations historiques' },
+      { id: 'gpt-4o', name: 'GPT-4o', freeTier: false, description: 'Modèle multimodal haut de gamme' },
+    ],
+  },
+  anthropic: {
+    id: 'anthropic',
+    name: 'Anthropic Claude',
+    badge: 'Claude 3.5 Haiku',
+    iconEmoji: '🟣',
+    defaultModel: 'claude-3-5-haiku-20241022',
+    endpointUrl: 'https://api.anthropic.com/v1',
+    apiKey: 'sk-ant-demo-ClaudeFreeTierKey',
+    isConfigured: true,
+    freeTierNote: 'Crédits de bienvenue offerts sur Anthropic Console',
+    docsUrl: 'https://console.anthropic.com/settings/keys',
+    availableModels: [
+      { id: 'claude-3-5-haiku-20241022', name: 'Claude 3.5 Haiku', freeTier: true, description: 'Vitesse de frappe exceptionnelle pour patches et diffs' },
+      { id: 'claude-3-7-sonnet-20250219', name: 'Claude 3.7 Sonnet', freeTier: false, description: 'Modèle hybride raisonnement et codage haute précision' },
+      { id: 'claude-3-5-sonnet-20241022', name: 'Claude 3.5 Sonnet', freeTier: false, description: 'Référence mondiale pour l\'ingénierie logicielle' },
+    ],
+  },
+  mistral: {
+    id: 'mistral',
+    name: 'Mistral AI',
+    badge: 'Codestral & Mistral Small',
+    iconEmoji: '🟠',
+    defaultModel: 'codestral-latest',
+    endpointUrl: 'https://api.mistral.ai/v1',
+    apiKey: 'mistral-demo-free-tier-validated',
+    isConfigured: true,
+    freeTierNote: 'Plan Experiment 100% gratuit sur La Plateforme Mistral sans carte bancaire',
+    docsUrl: 'https://console.mistral.ai/api-keys/',
+    availableModels: [
+      { id: 'codestral-latest', name: 'Codestral (Mistral)', freeTier: true, description: 'Modèle open-weights français ultra-spécialisé pour le code (80+ langages)' },
+      { id: 'mistral-small-latest', name: 'Mistral Small', freeTier: true, description: 'Modèle rapide et économe pour analyse de logs et petits scripts' },
+      { id: 'open-mistral-nemo', name: 'Mistral NeMo 12B', freeTier: true, description: 'Modèle libre 128k contexte pour l\'ingénierie continue' },
+    ],
+  },
+};
 
 export const defaultGitHubConfig: GitHubConfig = {
   repoOwner: 'acme-corp',

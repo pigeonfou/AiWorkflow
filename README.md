@@ -8,12 +8,29 @@ Application de workflow autonome pour le cycle continu :
 ## 📋 Table des Matières
 
 - [1. Prérequis & Initialisation du Serveur Ubuntu](#1-prérequis--initialisation-du-serveur-ubuntu)
-- [2. Option A : Déploiement avec Docker & Docker Compose (Recommandé)](#2-option-a--déploiement-avec-docker--docker-compose-recommandé)
-- [3. Option B : Déploiement Natif (Node.js 22 + PM2 + Nginx)](#3-option-b--déploiement-natif-nodejs-22--pm2--nginx)
-- [4. Configuration du Pare-feu (UFW)](#4-configuration-du-pare-feu-ufw)
-- [5. Mise en place de l'Agent de Déploiement & Auto-Rollback](#5-mise-en-place-de-lagent-de-déploiement--auto-rollback)
-- [6. Configuration CI/CD GitHub Actions (Optionnel)](#6-configuration-cicd-github-actions-optionnel)
-- [7. Commandes Utiles & Maintenance](#7-commandes-utiles--maintenance)
+- [2. Moteurs IA Disponibles & Plans Gratuits](#2-moteurs-ia-disponibles--plans-gratuits)
+- [3. Option A : Déploiement avec Docker & Docker Compose (Recommandé)](#3-option-a--déploiement-avec-docker--docker-compose-recommandé)
+- [4. Option B : Déploiement Natif (Node.js 22 + PM2 + Nginx)](#4-option-b--déploiement-natif-nodejs-22--pm2--nginx)
+- [5. Configuration du Pare-feu (UFW)](#5-configuration-du-pare-feu-ufw)
+- [6. Mise en place de l'Agent de Déploiement & Auto-Rollback](#6-mise-en-place-de-lagent-de-déploiement--auto-rollback)
+- [7. Configuration CI/CD GitHub Actions (Optionnel)](#7-configuration-cicd-github-actions-optionnel)
+- [8. Commandes Utiles & Maintenance](#8-commandes-utiles--maintenance)
+
+---
+
+## 2. Moteurs IA Disponibles & Plans Gratuits
+
+Le projet permet de sélectionner à la volée le modèle d'IA pour l'analyse de code, la création des patchs et l'auto-correction :
+
+| Fournisseur | Modèle Recommandé | Plan Gratuit / Quota | Lien d'accès & Clé |
+|---|---|---|---|
+| **Google Gemini** | `gemini-2.5-flash` / `gemini-2.5-flash-lite` | Gratuit (15 RPM / 1M TPM sans CB) | [Google AI Studio](https://aistudio.google.com/app/apikey) |
+| **Mistral AI** | `codestral-latest` / `mistral-small-latest` | Plan Experiment 100% gratuit | [Mistral La Plateforme](https://console.mistral.ai/) |
+| **OpenAI** | `gpt-4o-mini` / `gpt-3.5-turbo` | Crédits d'accueil & free-tier | [OpenAI Platform](https://platform.openai.com/api-keys) |
+| **Anthropic** | `claude-3-5-haiku-20241022` | Crédits de bienvenue Console | [Anthropic Console](https://console.anthropic.com/) |
+| **Proxy / Local** | `ollama` / `openrouter` / `vLLM` | Auto-hébergé / `http://localhost:11434/v1` | Configurable dans les Paramètres |
+
+---
 
 ---
 
