@@ -24,6 +24,7 @@ import { ApprovalRollbackBanner } from './components/ApprovalRollbackBanner';
 import { HistoryDrawer } from './components/HistoryDrawer';
 import { ConfigModal } from './components/ConfigModal';
 import { ScriptExportModal } from './components/ScriptExportModal';
+import { WindowsPackagingModal } from './components/WindowsPackagingModal';
 import { 
   defaultAIProviders,
   defaultGitHubConfig, 
@@ -68,6 +69,7 @@ export default function App() {
   const [isConfigOpen, setIsConfigOpen] = useState(false);
   const [configInitialTab, setConfigInitialTab] = useState<'ai' | 'server' | 'git'>('ai');
   const [isScriptsOpen, setIsScriptsOpen] = useState(false);
+  const [isWindowsModalOpen, setIsWindowsModalOpen] = useState(false);
 
   const isRunning = currentRun?.status === 'running';
   const waitingReview = currentRun?.status === 'waiting_review';
@@ -210,6 +212,7 @@ export default function App() {
           setIsConfigOpen(true);
         }}
         onOpenScripts={() => setIsScriptsOpen(true)}
+        onOpenWindowsModal={() => setIsWindowsModalOpen(true)}
       />
 
       {/* Main Container */}
@@ -403,6 +406,11 @@ export default function App() {
         onClose={() => setIsScriptsOpen(false)}
         serverConfig={serverConfig}
         gitHubConfig={gitHubConfig}
+      />
+
+      <WindowsPackagingModal
+        isOpen={isWindowsModalOpen}
+        onClose={() => setIsWindowsModalOpen(false)}
       />
     </div>
   );

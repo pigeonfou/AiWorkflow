@@ -19,6 +19,7 @@ interface HeaderProps {
   onOpenHistory: () => void;
   onOpenConfig: () => void;
   onOpenScripts: () => void;
+  onOpenWindowsModal: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -28,6 +29,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenHistory,
   onOpenConfig,
   onOpenScripts,
+  onOpenWindowsModal,
 }) => {
   const isBusy = currentRun?.status === 'running';
 
@@ -80,6 +82,14 @@ export const Header: React.FC<HeaderProps> = ({
 
           {/* Action buttons */}
           <div className="flex items-center gap-1.5 pl-1 border-l border-slate-800">
+            <button
+              onClick={onOpenWindowsModal}
+              title="Compiler & Télécharger l'Installeur Windows 10/11 (.exe)"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-sky-500/10 hover:bg-sky-500/20 text-sky-300 hover:text-white border border-sky-500/30 transition-colors font-medium text-xs cursor-pointer mr-1"
+            >
+              <span>🪟</span>
+              <span className="hidden sm:inline">Package Windows (.exe)</span>
+            </button>
             <button
               onClick={onOpenHistory}
               title="Historique des déploiements et points de restauration"

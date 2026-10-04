@@ -15,6 +15,7 @@ Application de workflow autonome pour le cycle continu :
 - [6. Mise en place de l'Agent de Déploiement & Auto-Rollback](#6-mise-en-place-de-lagent-de-déploiement--auto-rollback)
 - [7. Configuration CI/CD GitHub Actions (Optionnel)](#7-configuration-cicd-github-actions-optionnel)
 - [8. Commandes Utiles & Maintenance](#8-commandes-utiles--maintenance)
+- [9. Compilation & Installation sous Windows 10 / Windows 11](#9-compilation--installation-sous-windows-10--windows-11)
 
 ---
 
@@ -289,7 +290,7 @@ Dans les secrets de votre dépôt GitHub (`Settings > Secrets and variables > Ac
 
 ---
 
-## 7. Commandes Utiles & Maintenance
+## 8. Commandes Utiles & Maintenance
 
 | Action | Commande Docker | Commande PM2 |
 |---|---|---|
@@ -298,3 +299,39 @@ Dans les secrets de votre dépôt GitHub (`Settings > Secrets and variables > Ac
 | **Arrêter le service** | `sudo docker compose down` | `pm2 stop gitops-autopilot` |
 | **Tester le healthcheck** | `curl -i http://localhost:3000/api/health` | `curl -i http://localhost:3000/api/health` |
 | **Forcer un rollback manuel** | `cd /var/www/gitops-app && git reset --hard $(cat /tmp/last_healthy_commit) && docker compose restart` | `cd /var/www/gitops-app && git reset --hard $(cat /tmp/last_healthy_commit) && pm2 restart gitops-autopilot` |
+
+---
+
+## 9. Compilation & Installation sous Windows 10 / Windows 11
+
+Le projet a été adapté avec une architecture **Electron & Electron-Builder** pour fonctionner comme une application de bureau native sous **Windows 10** et **Windows 11** (architectures `x64` et `ARM64`).
+
+### Formats d'installateurs disponibles :
+1. **Installateur Standard NSIS (`.exe`)** : `GitOps-Autopilot-Setup-1.0.0.exe`
+   - Assistant d'installation pas-à-pas en français et anglais.
+   - Création automatique du raccourci sur le Bureau et dans le Menu Démarrer.
+   - Entrée officielle dans le panneau "Ajout/Suppression de programmes" de Windows.
+2. **Version Portable (`.exe`)** : `GitOps-Autopilot-Portable-1.0.0.exe`
+   - Exécution directe sans installation ni droits administrateur.
+3. **Scripts d'installation 1-clic** :
+   - `windows/install.bat` : Double-cliquez pour installer et créer le raccourci Windows.
+   - `windows/install.ps1` : Script PowerShell 5.1/7 avec configuration du profil.
+   - `windows/GitOps-Autopilot.iss` : Script Inno Setup 6 compilable avec `iscc`.
+
+### Commandes de compilation sur machine Windows :
+```powershell
+# 1. Cloner et installer les dépendances
+git clone https://github.com/VOTRE_COMPTE/VOTRE_PROJET.git
+cd VOTRE_PROJET
+npm install
+
+# 2. Compiler pour Windows 10 et 11 (génère le .exe NSIS et le portable)
+npm run dist:win
+
+# 3. Les installateurs .exe sont disponibles dans le dossier :
+# .\dist_windows\GitOps-Autopilot-Setup-1.0.0.exe
+```
+
+### Accès direct depuis l'application :
+Cliquez sur le bouton **« 🪟 Package Windows (.exe) »** dans la barre supérieure de l'application pour télécharger les scripts d'installation, tester le simulateur de compilation et visualiser l'application dans son cadre natif Windows 11.
+

@@ -1,0 +1,45 @@
+{
+  "appId": "com.gitops.autopilot",
+  "productName": "GitOps Autopilot",
+  "copyright": "Copyright © 2026 GitOps Autopilot Contributors",
+  "directories": {
+    "output": "dist_windows",
+    "buildResources": "build"
+  },
+  "files": [
+    "dist/**/*",
+    "electron/**/*",
+    "package.json"
+  ],
+  "win": {
+    "target": [
+      {
+        "target": "nsis",
+        "arch": ["x64", "arm64"]
+      },
+      {
+        "target": "portable",
+        "arch": ["x64"]
+      }
+    ],
+    "artifactName": "${productName}-Setup-${version}.${ext}",
+    "requestedExecutionLevel": "asInvoker",
+    "publisherName": "GitOps Autopilot Team"
+  },
+  "nsis": {
+    "oneClick": false,
+    "perMachine": false,
+    "allowToChangeInstallationDirectory": true,
+    "allowElevation": true,
+    "installerLanguages": ["fr", "en"],
+    "createDesktopShortcut": "always",
+    "createStartMenuShortcut": true,
+    "shortcutName": "GitOps Autopilot",
+    "uninstallDisplayName": "GitOps Autopilot - Désinstallation",
+    "deleteAppDataOnUninstall": false,
+    "runAfterFinish": true
+  },
+  "portable": {
+    "artifactName": "${productName}-Portable-${version}.exe"
+  }
+}
